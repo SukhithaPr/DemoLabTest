@@ -9,16 +9,45 @@ import SwiftUI
 import SwiftData
 
 struct FavView: View {
-    @Query private var favMemes: [FavMeme]
+    @Environment(MemeStore.self) private var store
+    @Query(sort: \FavMeme.createdAt, order: .reverse) private var favMemes: [FavMeme]
 
     var body: some View {
-        Text("\(favMemes.count) favourite memes")
-            .font(.title)
-            .bold()
+        NavigationStack {
+            Group {
+                if favMemes.isEmpty {
+                    ContentUnavailableView("No Favourites",
+                                           systemImage: "heart",
+                                           description: Text("Tap the heart on a meme to add it here."))
+                } else {
+                    List {
+                        ForEach(favMemes) { fav in
+                            HStack {
+                                Text(fav.name)
+
+                                Spacer()
+
+                                Button {
+                                    store.removeFav(fav)
+                                } label: {
+                                    Image(systemName: "heart.fill")
+                                        .padding()
+                                }
+                                .buttonStyle(.borderless)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("\(favMemes.count) Favourites")
+        }
     }
 }
 
 #Preview {
+    let container = try! ModelContainer(for: FavMeme.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+
     FavView()
-        .modelContainer(for: FavMeme.self, inMemory: true)
+        .environment(MemeStore(context: container.mainContext))
+        .modelContainer(container)
 }
