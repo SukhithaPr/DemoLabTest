@@ -11,6 +11,7 @@ import SwiftData
 struct MemesView: View {
     @Environment(MemeStore.self) private var store
     @Query private var favMemes: [FavMeme]
+    @State private var selectedMeme: Memes?
 
     private var favIDs: Set<String> {
         Set(favMemes.map(\.memeID))
@@ -25,14 +26,20 @@ struct MemesView: View {
                     List {
                         ForEach(store.memes) { meme in
                             HStack {
-                                VStack(alignment: .leading) {
-                                    Text(meme.name)
-                                        .font(.headline)
+                                Button {
+                                    selectedMeme = meme
+                                } label: {
+                                    VStack(alignment: .leading) {
+                                        Text(meme.name)
+                                            .font(.headline)
 
-                                    Text("Captions: \(meme.captions)")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        Text("Captions: \(meme.captions)")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
+                                .tint(.primary)
+                                .buttonStyle(.borderless)
 
                                 Spacer()
 
@@ -49,6 +56,9 @@ struct MemesView: View {
                 }
             }
             .navigationTitle("Memes")
+            .sheet(item: $selectedMeme) { meme in
+                MemeDetailView(meme: meme)
+            }
             .task {
                 await store.fetchMemeData()
             }
