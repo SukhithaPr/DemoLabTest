@@ -32,6 +32,7 @@ struct MemesView: View {
                                     VStack(alignment: .leading) {
                                         Text(meme.name)
                                             .font(.headline)
+                                            .multilineTextAlignment(.leading)
 
                                         Text("Captions: \(meme.captions)")
                                             .font(.caption)
