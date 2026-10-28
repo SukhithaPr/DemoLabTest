@@ -56,6 +56,14 @@ struct MemesView: View {
                 }
             }
             .navigationTitle("Memes")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Meme Roulette", systemImage: "dice") {
+                        selectedMeme = store.memes.randomElement()
+                    }
+                    .disabled(store.memes.isEmpty)
+                }
+            }
             .sheet(item: $selectedMeme) { meme in
                 MemeDetailView(meme: meme)
             }

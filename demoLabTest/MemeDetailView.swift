@@ -23,13 +23,16 @@ struct MemeDetailView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .center, spacing: 16) {
+                    Text(meme.name)
+                        .font(.title2.bold())
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
                     memeImage
                     favButton
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
             }
-            .navigationTitle(meme.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
