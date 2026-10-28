@@ -30,6 +30,10 @@ final class MemeStore {
         }
     }
 
+    func removeFav(_ fav: FavMeme) {
+        context.delete(fav)
+    }
+
     func fetchMemeData() async {
         guard let url = URL(string: "https://api.imgflip.com/get_memes") else {
             return
