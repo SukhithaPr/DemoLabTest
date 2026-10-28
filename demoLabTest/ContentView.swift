@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var memes: [Memes] = []
+    @State private var selectedMeme: Memes?
     var body: some View {
         NavigationStack {
             Group {
@@ -17,19 +18,27 @@ struct ContentView: View {
                 } else {
                     List {
                         ForEach(memes) { meme in
-                            VStack(alignment: .leading) {
-                                Text(meme.name)
-                                    .font(.headline)
+                            Button {
+                                selectedMeme = meme
+                            } label: {
+                                VStack(alignment: .leading) {
+                                    Text(meme.name)
+                                        .font(.headline)
 
-                                Text("Captions: \(meme.captions)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    Text("Captions: \(meme.captions)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
+                            .tint(.primary)
                         }
                     }
                 }
             }
             .navigationTitle("Memes")
+            .sheet(item: $selectedMeme) { meme in
+                MemeDetailView(meme: meme)
+            }
             .task {
                 await fetchMemeData()
             }
